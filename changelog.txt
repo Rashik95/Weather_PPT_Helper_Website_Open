@@ -1,1 +1,5 @@
-
+Version 1.0.0
+- Initial Release
+- Splash Screen
+- Random Logo
+- Chrome Auto Launch
