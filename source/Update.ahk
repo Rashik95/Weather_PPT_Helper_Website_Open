@@ -51,3 +51,68 @@ CheckForUpdates()
 
     return true
 }
+;=========================================================
+; STEP 4.2 - Update Dialog
+;=========================================================
+
+ShowUpdateDialog(NewVersion)
+{
+    global GitHubRelease
+    global ChangelogURL
+    global TempFolder
+
+    ChangeLogFile := TempFolder "\changelog.txt"
+
+    ;-----------------------------------------------------
+    ; Download Latest Changelog
+    ;-----------------------------------------------------
+    SafeDownload(ChangelogURL, ChangeLogFile)
+
+    ChangeLog := ReadText(ChangeLogFile)
+
+    if (ChangeLog = "")
+        ChangeLog := "No changelog available."
+
+    Result := MsgBox(
+        "A new version is available.`n`n"
+        . "Current Version : " AppVersion "`n"
+        . "Latest Version  : " NewVersion "`n`n"
+        . ChangeLog "`n`n"
+        . "Do you want to open the download page?",
+        "Update Available",
+        "YesNo Iconi"
+    )
+
+    if (Result = "Yes")
+    {
+        OpenUpdatePage()
+    }
+    else
+    {
+        WriteLog("User skipped update.")
+    }
+}
+
+;---------------------------------------------------------
+; Open GitHub Release Page
+;---------------------------------------------------------
+OpenUpdatePage()
+{
+    global GitHubRelease
+
+    try
+    {
+        Run(GitHubRelease)
+        WriteLog("Opened GitHub Release Page")
+    }
+    catch
+    {
+        MsgBox(
+            "Unable to open the download page.",
+            "Update",
+            "Iconx"
+        )
+
+        WriteLog("Failed to open GitHub Release Page")
+    }
+}
