@@ -1,97 +1,55 @@
-﻿
-;=========================================================
-; ১.২ - Folder Initialization
-;=========================================================
-
-; AppData ফোল্ডার না থাকলে তৈরি করো
-if !DirExist(AppFolder)
-    DirCreate(AppFolder)
-
-; Logo Folder না থাকলে তৈরি করো
-if !DirExist(LogoFolder)
-    DirCreate(LogoFolder)
-
-; Temp Folder না থাকলে তৈরি করো
-if !DirExist(TempFolder)
-    DirCreate(TempFolder)
+#Requires AutoHotkey v2.0
 
 ;=========================================================
-; Local Files
+; Utils.ahk
+; Common Utility Functions
 ;=========================================================
 
-VersionFile := AppFolder "\version.txt"
-LogoListFile := AppFolder "\logos.txt"
-
-;=========================================================
-; Future Files (Reserved)
-;=========================================================
-; ConfigFile := AppFolder "\config.json"
-; CacheFile  := AppFolder "\cache.dat"
-; LogFile    := AppFolder "\launcher.log"
-
-;=========================================================
-; ১.৩ এখানে শুরু হবে
-;
-; কাজ:
-; ✔ Internet Connection Check
-; ✔ Online / Offline Mode নির্ধারণ
-; ✔ GitHub Access পরীক্ষা
-;=========================================================
-;=========================================================
-; ১.৩ - Internet Connection Check
-;=========================================================
-
-IsOnline := false
-
-try
+;---------------------------------------------------------
+; Initialize Folder Structure
+;---------------------------------------------------------
+Initialize()
 {
-    ; GitHub থেকে একটি ছোট ফাইল ডাউনলোড করে
-    ; ইন্টারনেট ও GitHub উভয়ই পরীক্ষা করা হবে
+    global AppFolder
+    global LogoFolder
+    global TempFolder
 
-    TestFile := TempFolder "\connection.tmp"
+    if !DirExist(AppFolder)
+        DirCreate(AppFolder)
 
-    Download(
-        GitHubRaw "version.txt",
-        TestFile
-    )
+    if !DirExist(LogoFolder)
+        DirCreate(LogoFolder)
 
-    if FileExist(TestFile)
-    {
-        IsOnline := true
-
-        ; Test File Delete
-        try FileDelete(TestFile)
-    }
+    if !DirExist(TempFolder)
+        DirCreate(TempFolder)
 }
-catch
+
+;---------------------------------------------------------
+; Internet Connection Check
+;---------------------------------------------------------
+CheckInternet()
 {
-    ; Offline Mode
+    global IsOnline
+
     IsOnline := false
+
+    try
+    {
+        Download(
+            "https://www.google.com/favicon.ico",
+            A_Temp "\internet.tmp"
+        )
+
+        if FileExist(A_Temp "\internet.tmp")
+        {
+            FileDelete(A_Temp "\internet.tmp")
+            IsOnline := true
+        }
+    }
+    catch
+    {
+        IsOnline := false
+    }
+
+    return IsOnline
 }
-
-;=========================================================
-; Status
-;=========================================================
-
-if IsOnline
-{
-    ConnectionStatus := "ONLINE"
-}
-else
-{
-    ConnectionStatus := "OFFLINE"
-}
-
-;=========================================================
-; Debug (Development Mode)
-;=========================================================
-; MsgBox("Connection : " ConnectionStatus)
-
-;=========================================================
-; ১.৪ এখানে শুরু হবে
-;
-; কাজ:
-; ✔ version.txt Download
-; ✔ logos.txt Download
-; ✔ Offline হলে Local File ব্যবহার
-;=========================================================
