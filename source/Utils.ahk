@@ -149,3 +149,90 @@ SafeCopy(Source, Destination)
         return false
     }
 }
+;=========================================================
+; STEP 2.3 - Download & Text Functions
+;=========================================================
+
+;---------------------------------------------------------
+; Safe Download File
+;---------------------------------------------------------
+SafeDownload(URL, SaveFile)
+{
+    try
+    {
+        Download(URL, SaveFile)
+
+        if FileExist(SaveFile)
+            return true
+    }
+    catch
+    {
+    }
+
+    return false
+}
+
+;---------------------------------------------------------
+; Read Text File
+;---------------------------------------------------------
+ReadText(FileName)
+{
+    try
+    {
+        if FileExist(FileName)
+            return Trim(FileRead(FileName, "UTF-8"))
+    }
+    catch
+    {
+    }
+
+    return ""
+}
+
+;---------------------------------------------------------
+; Write Text File
+;---------------------------------------------------------
+WriteText(FileName, Text)
+{
+    try
+    {
+        FileDelete(FileName)
+    }
+    catch
+    {
+    }
+
+    try
+    {
+        FileAppend(Text, FileName, "UTF-8")
+        return true
+    }
+    catch
+    {
+        return false
+    }
+}
+
+;---------------------------------------------------------
+; Append Text File
+;---------------------------------------------------------
+AppendText(FileName, Text)
+{
+    try
+    {
+        FileAppend(Text "`r`n", FileName, "UTF-8")
+        return true
+    }
+    catch
+    {
+        return false
+    }
+}
+
+;---------------------------------------------------------
+; Get Current Date Time
+;---------------------------------------------------------
+GetDateTime()
+{
+    return FormatTime(A_Now, "yyyy-MM-dd HH:mm:ss")
+}
