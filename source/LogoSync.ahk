@@ -129,3 +129,68 @@ SelectRandomLogo()
 
     return true
 }
+;=========================================================
+; STEP 3.4 - Offline Support & Validation
+;=========================================================
+
+;---------------------------------------------------------
+; Validate Selected Logo
+;---------------------------------------------------------
+ValidateLogo()
+{
+    global SelectedLogo
+
+    if (SelectedLogo = "")
+        return false
+
+    if !FileExist(SelectedLogo)
+    {
+        SelectedLogo := ""
+        return false
+    }
+
+    return true
+}
+
+;---------------------------------------------------------
+; Load Logo (Online / Offline)
+;---------------------------------------------------------
+LoadLogo()
+{
+    global IsOnline
+
+    ;-----------------------------------------
+    ; Online হলে Sync করবে
+    ;-----------------------------------------
+    if IsOnline
+        SyncLogos()
+
+    ;-----------------------------------------
+    ; Random Logo Select
+    ;-----------------------------------------
+    SelectRandomLogo()
+
+    ;-----------------------------------------
+    ; যদি Logo না থাকে
+    ;-----------------------------------------
+    if !ValidateLogo()
+    {
+        WriteLog("No Logo Available")
+        return false
+    }
+
+    return true
+}
+
+;---------------------------------------------------------
+; Get Current Logo
+;---------------------------------------------------------
+GetCurrentLogo()
+{
+    global SelectedLogo
+    return SelectedLogo
+}
+
+;=========================================================
+; END OF LOGOSYNC.AHK
+;=========================================================
