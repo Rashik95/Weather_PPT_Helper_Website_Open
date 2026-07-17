@@ -236,3 +236,72 @@ GetDateTime()
 {
     return FormatTime(A_Now, "yyyy-MM-dd HH:mm:ss")
 }
+;=========================================================
+; STEP 2.4 - Random Logo Functions
+;=========================================================
+
+;---------------------------------------------------------
+; Get All PNG Logo Files
+;---------------------------------------------------------
+GetLogoFiles()
+{
+    global LogoFolder
+
+    LogoArray := []
+
+    if !DirExist(LogoFolder)
+        return LogoArray
+
+    Loop Files, LogoFolder "\*.png", "F"
+    {
+        LogoArray.Push(A_LoopFileFullPath)
+    }
+
+    return LogoArray
+}
+
+;---------------------------------------------------------
+; Select Random Logo
+;---------------------------------------------------------
+LoadRandomLogo()
+{
+    global SelectedLogo
+
+    SelectedLogo := ""
+
+    Logos := GetLogoFiles()
+
+    if (Logos.Length = 0)
+        return ""
+
+    RandomIndex := Random(1, Logos.Length)
+
+    SelectedLogo := Logos[RandomIndex]
+
+    return SelectedLogo
+}
+
+;---------------------------------------------------------
+; Logo Count
+;---------------------------------------------------------
+GetLogoCount()
+{
+    Logos := GetLogoFiles()
+    return Logos.Length
+}
+
+;---------------------------------------------------------
+; Has Any Logo?
+;---------------------------------------------------------
+HasLogo()
+{
+    return (GetLogoCount() > 0)
+}
+
+;---------------------------------------------------------
+; Get Random Integer
+;---------------------------------------------------------
+RandomNumber(Min, Max)
+{
+    return Random(Min, Max)
+}
