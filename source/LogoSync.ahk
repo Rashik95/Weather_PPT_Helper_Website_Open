@@ -72,3 +72,60 @@ DownloadLogoFiles(LogoList)
 
     RemoveUnusedLogos(LogoList)
 }
+;---------------------------------------------------------
+; Remove Old Logos
+;---------------------------------------------------------
+RemoveUnusedLogos(LogoList)
+{
+    global LogoFolder
+
+    Loop Files, LogoFolder "\*.png", "F"
+    {
+        LocalLogo := A_LoopFileName
+
+        if !InStr("`n" LogoList "`n", "`n" LocalLogo "`n")
+        {
+            try
+            {
+                FileDelete(A_LoopFileFullPath)
+                WriteLog("Deleted : " LocalLogo)
+            }
+            catch
+            {
+                WriteLog("Delete Failed : " LocalLogo)
+            }
+        }
+    }
+
+    SelectRandomLogo()
+}
+
+;---------------------------------------------------------
+; Select Random Logo
+;---------------------------------------------------------
+SelectRandomLogo()
+{
+    global LogoFolder
+    global SelectedLogo
+
+    Logos := []
+
+    Loop Files, LogoFolder "\*.png", "F"
+    {
+        Logos.Push(A_LoopFileFullPath)
+    }
+
+    if (Logos.Length = 0)
+    {
+        SelectedLogo := ""
+        return false
+    }
+
+    RandomIndex := Random(1, Logos.Length)
+
+    SelectedLogo := Logos[RandomIndex]
+
+    WriteLog("Random Logo : " SelectedLogo)
+
+    return true
+}
