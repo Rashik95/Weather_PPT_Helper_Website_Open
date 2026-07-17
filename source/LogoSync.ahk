@@ -38,3 +38,37 @@ SyncLogos()
 
     DownloadLogoFiles(LogoList)
 }
+;---------------------------------------------------------
+; Download All Logos
+;---------------------------------------------------------
+DownloadLogoFiles(LogoList)
+{
+    global GitHubRaw
+    global LogoFolder
+
+    Loop Parse, LogoList, "`n", "`r"
+    {
+        LogoName := Trim(A_LoopField)
+
+        if (LogoName = "")
+            continue
+
+        LocalFile := LogoFolder "\" LogoName
+        RemoteURL := GitHubRaw "logo/" LogoName
+
+        ;-------------------------------------
+        ; Download / Replace Logo
+        ;-------------------------------------
+        try
+        {
+            Download(RemoteURL, LocalFile)
+            WriteLog("Downloaded : " LogoName)
+        }
+        catch
+        {
+            WriteLog("Download Failed : " LogoName)
+        }
+    }
+
+    RemoveUnusedLogos(LogoList)
+}
