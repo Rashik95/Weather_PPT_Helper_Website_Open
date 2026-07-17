@@ -116,3 +116,74 @@ OpenUpdatePage()
         WriteLog("Failed to open GitHub Release Page")
     }
 }
+;=========================================================
+; STEP 4.3 - Update Schedule & Settings
+;=========================================================
+
+;---------------------------------------------------------
+; Check Update Interval
+;---------------------------------------------------------
+ShouldCheckForUpdate()
+{
+    global SettingsFile
+    global ReminderHours
+
+    LastCheck := IniRead(
+        SettingsFile,
+        "Update",
+        "LastCheck",
+        ""
+    )
+
+    ; প্রথমবার চালু হলে
+    if (LastCheck = "")
+        return true
+
+    try
+    {
+        LastTime := DateDiff(A_Now, LastCheck, "Hours")
+
+        if (Abs(LastTime) >= ReminderHours)
+            return true
+    }
+    catch
+    {
+        return true
+    }
+
+    return false
+}
+
+;---------------------------------------------------------
+; Save Update Check Time
+;---------------------------------------------------------
+SaveUpdateCheckTime()
+{
+    global SettingsFile
+
+    try
+    {
+        IniWrite(
+            A_Now,
+            SettingsFile,
+            "Update",
+            "LastCheck"
+        )
+    }
+    catch
+    {
+        WriteLog("Failed to save update check time.")
+    }
+}
+
+;---------------------------------------------------------
+; Startup Update Check
+;---------------------------------------------------------
+RunUpdateCheck()
+{
+    if ShouldCheckForUpdate()
+    {
+        CheckForUpdates()
+        SaveUpdateCheckTime()
+    }
+}
