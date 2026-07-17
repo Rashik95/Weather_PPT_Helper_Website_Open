@@ -53,3 +53,99 @@ CheckInternet()
 
     return IsOnline
 }
+;=========================================================
+; STEP 2.2 - File & Folder Utility Functions
+;=========================================================
+
+;---------------------------------------------------------
+; Check File Exists
+;---------------------------------------------------------
+FileExistsEx(FilePath)
+{
+    return FileExist(FilePath) ? true : false
+}
+
+;---------------------------------------------------------
+; Check Folder Exists
+;---------------------------------------------------------
+FolderExistsEx(FolderPath)
+{
+    return DirExist(FolderPath) ? true : false
+}
+
+;---------------------------------------------------------
+; Safe Delete File
+;---------------------------------------------------------
+SafeDelete(FilePath)
+{
+    try
+    {
+        if FileExist(FilePath)
+            FileDelete(FilePath)
+    }
+    catch
+    {
+    }
+}
+
+;---------------------------------------------------------
+; Safe Delete Folder
+;---------------------------------------------------------
+SafeDeleteFolder(FolderPath)
+{
+    try
+    {
+        if DirExist(FolderPath)
+            DirDelete(FolderPath, true)
+    }
+    catch
+    {
+    }
+}
+
+;---------------------------------------------------------
+; Safe Create Folder
+;---------------------------------------------------------
+SafeCreateFolder(FolderPath)
+{
+    try
+    {
+        if !DirExist(FolderPath)
+            DirCreate(FolderPath)
+    }
+    catch
+    {
+    }
+}
+
+;---------------------------------------------------------
+; Safe Move File
+;---------------------------------------------------------
+SafeMove(Source, Destination)
+{
+    try
+    {
+        FileMove(Source, Destination, true)
+        return true
+    }
+    catch
+    {
+        return false
+    }
+}
+
+;---------------------------------------------------------
+; Safe Copy File
+;---------------------------------------------------------
+SafeCopy(Source, Destination)
+{
+    try
+    {
+        FileCopy(Source, Destination, true)
+        return true
+    }
+    catch
+    {
+        return false
+    }
+}
