@@ -305,3 +305,79 @@ RandomNumber(Min, Max)
 {
     return Random(Min, Max)
 }
+;=========================================================
+; STEP 2.5 - Log, Cleanup & System Functions
+;=========================================================
+
+;---------------------------------------------------------
+; Write Log
+;---------------------------------------------------------
+WriteLog(Message)
+{
+    global LogFile
+
+    try
+    {
+        TimeStamp := FormatTime(A_Now, "yyyy-MM-dd HH:mm:ss")
+        FileAppend(
+            "[" TimeStamp "] " Message "`r`n",
+            LogFile,
+            "UTF-8"
+        )
+    }
+    catch
+    {
+    }
+}
+
+;---------------------------------------------------------
+; Clean Temp Folder
+;---------------------------------------------------------
+CleanTempFolder()
+{
+    global TempFolder
+
+    if !DirExist(TempFolder)
+        return
+
+    Loop Files, TempFolder "\*", "FR"
+    {
+        try FileDelete(A_LoopFileFullPath)
+    }
+
+    Loop Files, TempFolder "\*", "D"
+    {
+        try DirDelete(A_LoopFileFullPath, true)
+    }
+}
+
+;---------------------------------------------------------
+; Restart Launcher
+;---------------------------------------------------------
+RestartLauncher()
+{
+    Run(A_ScriptFullPath)
+    ExitApp
+}
+
+;---------------------------------------------------------
+; Safe Exit
+;---------------------------------------------------------
+SafeExit()
+{
+    CleanTempFolder()
+    ExitApp
+}
+
+;---------------------------------------------------------
+; Debug Message
+;---------------------------------------------------------
+Debug(Text)
+{
+    ToolTip(Text)
+
+    SetTimer(
+        () => ToolTip(),
+        -2000
+    )
+}
