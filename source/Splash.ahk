@@ -60,3 +60,69 @@ ShowSplash()
 
     SplashGui.Show("w360 h340 Center")
 }
+;=========================================================
+; STEP 5.2 - Splash Animation & Close
+;=========================================================
+
+;---------------------------------------------------------
+; Fade In Splash
+;---------------------------------------------------------
+FadeInSplash()
+{
+    global SplashGui
+
+    WinSetTransparent(0, SplashGui)
+
+    Loop 20
+    {
+        WinSetTransparent(A_Index * 12, SplashGui)
+        Sleep(15)
+    }
+
+    WinSetTransparent(255, SplashGui)
+}
+
+;---------------------------------------------------------
+; Wait Splash Time
+;---------------------------------------------------------
+WaitSplash()
+{
+    global SettingsFile
+
+    SplashTime := IniRead(
+        SettingsFile,
+        "Window",
+        "SplashTime",
+        4000
+    )
+
+    Sleep(SplashTime)
+}
+
+;---------------------------------------------------------
+; Fade Out Splash
+;---------------------------------------------------------
+FadeOutSplash()
+{
+    global SplashGui
+
+    Loop 20
+    {
+        WinSetTransparent(255 - (A_Index * 12), SplashGui)
+        Sleep(15)
+    }
+}
+
+;---------------------------------------------------------
+; Close Splash
+;---------------------------------------------------------
+CloseSplash()
+{
+    global SplashGui
+
+    try
+        SplashGui.Destroy()
+    catch
+    {
+    }
+}
